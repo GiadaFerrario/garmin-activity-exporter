@@ -1,0 +1,6 @@
+@ActivityExporter.Api_HostAddress = http://localhost:5171
+
+GET {{ActivityExporter.Api_HostAddress}}/api/ping/
+Accept: application/json
+
+###

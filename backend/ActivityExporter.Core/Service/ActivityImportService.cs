@@ -30,8 +30,8 @@ public class ActivityImportService
 
         try
         {
-            _activityParser.Parse(file.Content);
-            return new UploadResult(file.FileName, UploadStatus.Success, "The file is a valid fit format");
+            var activitySummary = _activityParser.Parse(file.Content);
+            return new UploadResult(file.FileName, UploadStatus.Success, "The file is a valid fit format",  activitySummary);
         }
         catch (InvalidFileException ex)
         {

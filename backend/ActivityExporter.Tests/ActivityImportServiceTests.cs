@@ -110,9 +110,9 @@ public class ActivityImportServiceTests
     [Fact]
     public void Import_EmptyFile_ReturnsError()
     {
-        var parser = new FakeActivityParser(_ => throw new InvalidFileException("Uploaded file is empty"));
+        var parser = new FakeActivityParser(_ => CreateSummary());
         var service = new ActivityImportService(parser);
-        var files = new List<UploadedFile> { new UploadedFile("run.fit", new MemoryStream(new byte[100])) };
+        var files = new List<UploadedFile> { new UploadedFile("run.fit", new MemoryStream()) };
 
         var results = service.Import(files);
 
@@ -122,9 +122,9 @@ public class ActivityImportServiceTests
     }
     
     [Fact]
-    public void Import_HugeFile_ReturnsError()
+    public void Import_HugeFile_ReturnsErrorAndNoSummary()
     {
-        var parser = new FakeActivityParser(_ => throw new InvalidFileException("Uploaded file is too large"));
+        var parser = new FakeActivityParser(_ => CreateSummary());
         var service = new ActivityImportService(parser);
         var files = new List<UploadedFile> { new UploadedFile("run.fit", new MemoryStream(new byte[10 * 1024 * 1024 + 1])) };
 
@@ -133,5 +133,20 @@ public class ActivityImportServiceTests
         var result = Assert.Single(results);
         Assert.Equal(UploadStatus.Error , result.Status);
         Assert.Equal("Uploaded file is too large", result.Message);
+        Assert.Null(result.Summary);
+    }
+    
+    [Fact]
+    public void Import_ValidFitFile_ReturnsParsedSummary()
+    {
+        var summary = CreateSummary();
+        var parser = new FakeActivityParser(_ => summary);
+        var service = new ActivityImportService(parser);
+        var files = new List<UploadedFile> { CreateFile("run.fit") };
+
+        var results = service.Import(files);
+
+        var result = Assert.Single(results);
+        Assert.Equal(summary, result.Summary);
     }
 }

@@ -7,22 +7,34 @@ namespace ActivityExporter.Api;
 public class FixedTextFormatter : IActivityFormatter
 {
     public string Format(ActivitySummary activitySummary)
-    {   
+    {
         var sport = activitySummary.Sport;
-        var header = "Distance, time, pace (min/km), avgHR, maxHR"; // TODO depends on sport
+        var headerPace = sport switch
+        {
+            Sport.Swim => "(min/100m)",
+            Sport.Bike => "(km/h)",
+            Sport.Run => "(min/km)"
+        };
 
-        var splitLines = activitySummary.Splits.Select(FormatSplit);
+        var bikeHeader = sport.Equals(Sport.Bike) ? $"Elevation gain: {activitySummary.ElevationGain}" : "";
+        var header = $"Distance, time, pace {headerPace}, avgHR, maxHR";
+        if (bikeHeader != "")
+        {
+            header = string.Join("\n", bikeHeader, header);
+        }
+
+        var splitLines = activitySummary.Splits.Select(split => FormatSplit(split, sport));
         var lines = splitLines.Prepend(header);
         return string.Join("\n", lines);
     }
 
-    private string FormatSplit(Split split)
+    private string FormatSplit(Split split, Sport sport)
     {
         var distance = FormatDistance(split.DistanceInMeters);
         var time = FormatTime(split.Time);
-        var pace = ComputeAndFormatPace(split.Time, split.DistanceInMeters);
-        var avgHR = split.AvgHR.ToString();
-        var maxHR = split.MaxHR.ToString();
+        var pace = ComputeAndFormatPace(split.Time, split.DistanceInMeters, sport);
+        var avgHR = split.AvgHR.HasValue ?  split.AvgHR.ToString() : "-";
+        var maxHR = split.MaxHR.HasValue ?  split.MaxHR.ToString() : "-";
         var splitText = string.Join(" ", distance, time, pace, avgHR, maxHR);
         return splitText;
     }
@@ -43,16 +55,38 @@ public class FixedTextFormatter : IActivityFormatter
         return time.Hours != 0 ? time.ToString("hh':'mm':'ss") : time.ToString("mm':'ss");
     }
 
-    private static string ComputeAndFormatPace(TimeSpan Time, double DistanceInMeters)
+    private static string ComputeAndFormatPace(TimeSpan Time, double DistanceInMeters, Sport Sport)
+    {
+
+        String pace = Sport switch
+        {
+            Sport.Swim => FormatPacePerDistance(Time, DistanceInMeters, 100),
+            Sport.Bike => ComputeAndFormatPace_Bike(Time, DistanceInMeters),
+            Sport.Run => FormatPacePerDistance(Time, DistanceInMeters, 1000),
+        };
+
+        return pace;
+    }
+    
+
+    private static string ComputeAndFormatPace_Bike(TimeSpan Time, double DistanceInMeters)
+    {
+        // km/h: kilometres covered divided by hours elapsed
+        double kmh = (DistanceInMeters / 1000) / Time.TotalHours;
+
+        return $"@{kmh.ToString("0.0", CultureInfo.InvariantCulture)}";
+    }
+
+    // Pace as @m:ss, expressed per `paceDistanceInMeters` (1000 for run, 100 for swim)
+    private static string FormatPacePerDistance(TimeSpan time, double distanceInMeters, double paceDistanceInMeters)
     {
         // time to min
-        double minutes = Time.TotalMinutes;
-        // distance to km
-        double distanceKm = DistanceInMeters / 1000;
-        // pace min/km
-        double pace = minutes / distanceKm;
-            
-            
+        double minutes = time.TotalMinutes;
+        // distance in units of the pace distance (1 unit = 1 km for run, 100 m for swim)
+        double distanceUnits = distanceInMeters / paceDistanceInMeters;
+        // pace min per unit
+        double pace = minutes / distanceUnits;
+
         int min = (int)pace;
         int sec = (int)Math.Round((pace - min) * 60);
 
@@ -62,8 +96,6 @@ public class FixedTextFormatter : IActivityFormatter
             sec = 0;
         }
 
-        string strPace = $"@{min}:{sec:D2}";
-        
-        return strPace;
+        return $"@{min}:{sec:D2}";
     }
 }

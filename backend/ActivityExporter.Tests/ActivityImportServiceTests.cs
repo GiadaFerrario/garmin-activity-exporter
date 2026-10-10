@@ -49,7 +49,7 @@ public class ActivityImportServiceTests
         var results = service.Import(files);
 
         var result = Assert.Single(results);
-        Assert.Equal(UploadStatus.Success , result.Status);
+        Assert.Equal(UploadStatus.Success, result.Status);
     }
 
     [Fact]

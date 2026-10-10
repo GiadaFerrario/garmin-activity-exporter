@@ -1,4 +1,4 @@
-namespace ActivityExporter.Core;
+namespace ActivityExporter.Core.Models;
 
 public enum UploadStatus
 {

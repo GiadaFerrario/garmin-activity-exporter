@@ -14,12 +14,24 @@ So I built a tool that reads the activity files exported from Garmin Connect (no
 
 - **Backend:** C# / ASP.NET Core
 - **Frontend:** Vue 3 + TypeScript
-- **Parsing:** Garmin activity files (`.fit`)
+- **Parsing:** Garmin activity files (`.fit`), read with the official [Garmin FIT SDK](https://www.nuget.org/packages/Garmin.FIT.Sdk) for .NET
+- **Tests:** xUnit
+
+## How it works
+
+1. You upload one or more `.fit` files (already extracted, no zip).
+2. The backend checks each file (extension, size, integrity), reads it with the FIT SDK and keeps only the **work** of the activity: warm-up, rests and cool-down are left out.
+3. For every file it returns an outcome (`Success` or `Error` with a message) and, for the files that worked, the text to paste to your coach: distance, time, pace and heart rate of every split. The pace unit depends on the sport (min/km for running, min/100 m for swimming, km/h for cycling).
+
+Running, swimming and cycling are supported. Your files are processed locally and are not sent to any external service.
 
 ## Project structure
 
 ```
-backend/    ASP.NET Core solution (API, core logic, tests)
+backend/    ASP.NET Core solution
+            ActivityExporter.Core    models, interfaces and the import service (no external dependencies)
+            ActivityExporter.Api     endpoints, FIT parser, text formatter
+            ActivityExporter.Tests   xUnit tests
 frontend/   Vue app
 ```
 
@@ -40,9 +52,28 @@ npm install
 npm run dev
 ```
 
+### Try the API
+
+With the backend running (the `http` profile listens on port 5171):
+
+```bash
+curl -F "files=@/path/to/activity.fit" http://localhost:5171/api/activities
+```
+
+### Run the tests
+
+```bash
+cd backend
+dotnet test
+```
+
 ## Status
 
-Work in progress.
+Work in progress. The backend upload flow works end to end (upload, parsing, text). Coming next: the web page, a history of the uploaded activities and a way to delete them.
+
+## Acknowledgements
+
+`.fit` files are read with the [Garmin FIT SDK](https://developer.garmin.com/fit/overview/), used through its official NuGet package under the terms of the [FIT Protocol License Agreement](https://www.nuget.org/packages/Garmin.FIT.Sdk/21.218.0/License). The SDK itself is not included in this repository: it is restored from NuGet at build time.
 
 ## License
 

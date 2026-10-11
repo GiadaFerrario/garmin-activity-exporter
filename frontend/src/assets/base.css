@@ -84,3 +84,19 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+:root {
+  --color-accent: #4a6fa5;
+  --color-accent-text: #ffffff;
+  --color-success: #15803d;
+  --color-error: #b91c1c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-accent: #7da2d4;
+    --color-accent-text: #0f1722;
+    --color-success: #4ade80;
+    --color-error: #f87171;
+  }
+}

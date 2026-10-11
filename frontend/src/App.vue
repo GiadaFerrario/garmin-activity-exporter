@@ -5,6 +5,8 @@ import { uploadFiles } from '@/api/activities.ts'
 import type { UploadResponseItem } from '@/api/uploadResponseItem.ts'
 import UploadResults from '@/components/UploadResults.vue'
 import PopUp from '@/components/PopUp.vue'
+import AppHeader from '@/components/AppHeader.vue'
+import IconButton from '@/components/IconButton.vue'
 
 const results = ref<UploadResponseItem[]>([])
 const errorMessage = ref<string | null>(null)
@@ -59,7 +61,7 @@ async function onCopy() {
 </script>
 
 <template>
-  <header>Garmin Activity Exporter</header>
+  <AppHeader />
   <main>
     <UploadPanel @upload="onUpload" />
 
@@ -69,11 +71,28 @@ async function onCopy() {
     <UploadResults :responses="results" @show-text="onShowText" />
 
     <PopUp v-if="selectedResponse !== null" @close="selectedResponse = null">
-      <h2>{{ selectedResponse.fileName }}</h2>
+      <h2 class="popup-title">{{ selectedResponse.fileName }}</h2>
       <pre>{{ selectedResponse.text }}</pre>
-      <button @click="onCopy">Copy</button>
-      <button @click="selectedResponse = null">Close</button>
+      <div class="popup-actions">
+        <IconButton icon="copy" label="Copy" @click="onCopy" />
+        <IconButton icon="close" label="Close" @click="selectedResponse = null" />
+      </div>
       <p v-if="copyMessage">{{ copyMessage }}</p>
     </PopUp>
   </main>
 </template>
+
+<style scoped>
+.popup-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.popup-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
+</style>

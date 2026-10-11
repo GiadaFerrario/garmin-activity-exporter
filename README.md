@@ -2,6 +2,8 @@
 
 Web app that imports activity files downloaded from Garmin Connect, parses them, and exports the results as structured plain text, ready to copy and paste to your coach.
 
+> **Work in progress.** This is a portfolio project that I am building step by step, while exploring C#, ASP.NET Core and Vue. The backend already works end to end; the web page and the history of activities are still to come. See [Status](#status) for what is done and what is next.
+
 > Unofficial project, not affiliated with or endorsed by Garmin.
 
 ## Why
@@ -69,7 +71,16 @@ dotnet test
 
 ## Status
 
-Work in progress. The backend upload flow works end to end (upload, parsing, text). Coming next: the web page, a history of the uploaded activities and a way to delete them.
+Work in progress.
+
+- [x] Parse `.fit` files (running, swimming, cycling) with the Garmin FIT SDK
+- [x] Generate the text for the coach
+- [x] Upload API with one outcome per file
+- [x] Unit tests (formatter, parser, mapper, import service)
+- [ ] Web page: upload, outcomes, copy the text
+- [ ] History of the uploaded activities (local SQLite database)
+- [ ] Delete an activity from the history
+- [ ] Customizable output format
 
 ## Acknowledgements
 

@@ -8,8 +8,8 @@ public interface IActivityParser
     /// <summary>
     /// Parses the uploaded file
     /// </summary>
-    /// <param name="content">Content of the .fit file</param>
+    /// <param name="stream">Content of the .fit file</param>
     /// <returns>A summary of the activity described in the file with a list containing splits</returns>
     /// <exception cref="InvalidFileException"> When the file is not valid or the sport is not supported</exception>
-    ActivitySummary Parse(Stream content);
+    ActivitySummary Parse(Stream stream);
 }

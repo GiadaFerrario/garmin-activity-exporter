@@ -2,7 +2,7 @@
 
 Web app that imports activity files downloaded from Garmin Connect, parses them, and exports the results as structured plain text, ready to copy and paste to your coach.
 
-> **Work in progress.** This is a portfolio project that I am building step by step, while exploring C#, ASP.NET Core and Vue. The backend already works end to end; the web page and the history of activities are still to come. See [Status](#status) for what is done and what is next.
+> **Work in progress.** This is a portfolio project that I am building step by step, while exploring C#, ASP.NET Core and Vue. You can already upload files from the web page and copy the text for your coach; the history of the activities is still to come. See [Status](#status) for what is done and what is next.
 
 > Unofficial project, not affiliated with or endorsed by Garmin.
 
@@ -27,6 +27,16 @@ So I built a tool that reads the activity files exported from Garmin Connect (no
 
 Running, swimming and cycling are supported. Your files are processed locally and are not sent to any external service.
 
+## Screenshots
+
+Upload page, with one outcome per file:
+
+![Upload page with the outcome of each file](screenshots/upload-results.png)
+
+The text to paste to your coach, with a button to copy it:
+
+![Popup with the text for the coach](screenshots/text-popup.png)
+
 ## Project structure
 
 ```
@@ -34,17 +44,21 @@ backend/    ASP.NET Core solution
             ActivityExporter.Core    models, interfaces and the import service (no external dependencies)
             ActivityExporter.Api     endpoints, FIT parser, text formatter
             ActivityExporter.Tests   xUnit tests
-frontend/   Vue app
+frontend/   Vue 3 + TypeScript app (Vite)
 ```
 
 ## Getting started
+
+You need the [.NET 8 SDK](https://dotnet.microsoft.com/download) and [Node.js](https://nodejs.org/) 22 or newer. Run the backend and the frontend in two terminals.
 
 ### Backend
 
 ```bash
 cd backend
-dotnet run --project ActivityExporter.Api
+dotnet run --project ActivityExporter.Api --launch-profile http
 ```
+
+The API listens on `http://localhost:5171`.
 
 ### Frontend
 
@@ -53,6 +67,8 @@ cd frontend
 npm install
 npm run dev
 ```
+
+Open `http://localhost:5173`. During development Vite forwards the requests to `/api` to the backend, so no extra configuration is needed.
 
 ### Try the API
 
@@ -77,7 +93,8 @@ Work in progress.
 - [x] Generate the text for the coach
 - [x] Upload API with one outcome per file
 - [x] Unit tests (formatter, parser, mapper, import service)
-- [ ] Web page: upload, outcomes, copy the text
+- [x] Web page: upload, outcomes, popup with the text and copy button
+- [ ] Frontend tests
 - [ ] History of the uploaded activities (local SQLite database)
 - [ ] Delete an activity from the history
 - [ ] Customizable output format

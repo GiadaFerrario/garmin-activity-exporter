@@ -7,10 +7,14 @@ namespace ActivityExporter.Api;
 
 public class FitActivityMapper
 {
+    private const int MinLapDurationInSeconds = 3;
+    
     public static ActivitySummary Map(SessionMesg session, IReadOnlyList<LapMesg> laps)
     {
         // ActivitySummary (int Id, DateTimeOffset StartTime, Sport Sport, TimeSpan TotalTime, double DistanceInMeters, int? ElevationGain, IReadOnlyList<Split> Splits)
-        IReadOnlyList<Split> splits = laps.Select(MapLap).ToList();
+        IReadOnlyList<Split> splits = laps
+            .Where(lap => IsWorkLap(lap))
+            .Select(MapLap).ToList();
         var dateTime = session.GetStartTime()?.GetDateTime();
         if (dateTime == null)
         {
@@ -45,5 +49,10 @@ public class FitActivityMapper
             FitSport.Swimming => CoreSport.Swim,
             _ => throw new InvalidFileException($"{(sport.HasValue ? sport.ToString() : "The uploaded sport")} is not a supported Sport.")
         };
+    }
+
+    private static bool IsWorkLap(LapMesg lap)
+    {
+        return (lap.GetIntensity() is null or Intensity.Active) && lap.GetTotalDistance() > 0 && lap.GetTotalTimerTime() > MinLapDurationInSeconds;
     }
 }

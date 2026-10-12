@@ -2,8 +2,10 @@
 
 Web app that imports activity files downloaded from Garmin Connect, parses them, and exports the results as structured plain text, ready to copy and paste to your coach.
 
+> [!NOTE]
 > **Work in progress.** This is a portfolio project that I am building step by step, while exploring C#, ASP.NET Core and Vue. You can already upload files from the web page and copy the text for your coach; the history of the activities is still to come. See [Status](#status) for what is done and what is next.
 
+> [!IMPORTANT]
 > Unofficial project, not affiliated with or endorsed by Garmin.
 
 ## Why

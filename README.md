@@ -39,6 +39,35 @@ The text to paste to your coach, with a button to copy it:
 
 ![Popup with the text for the coach](screenshots/text-popup.png)
 
+## Architecture
+
+```mermaid
+flowchart LR
+    UI["Frontend<br/>Vue 3 + TypeScript<br/>(Vite, :5173)"]
+
+    subgraph Backend["Backend: ASP.NET Core (.NET 8)"]
+        EP["Upload endpoint<br/>POST /api/activities"]
+        SVC["Import service<br/>(Core project)"]
+        PARSER["FIT parser<br/>Adapter, Garmin FIT SDK"]
+        FMT["Text formatter<br/>Strategy"]
+        CUSTOM["Custom output format<br/>(planned)"]
+    end
+
+    DB[("SQLite + EF Core<br/>history, duplicate check<br/>(planned)")]
+
+    UI <-- "files / outcomes + coach text" --> EP
+    EP --> SVC
+    SVC -- parse --> PARSER
+    EP -- format --> FMT
+    FMT -.-> CUSTOM
+    SVC -.-> DB
+
+    classDef planned stroke-dasharray: 5 5
+    class CUSTOM,DB planned
+```
+
+Dashed = planned, not implemented yet.
+
 ## Project structure
 
 ```

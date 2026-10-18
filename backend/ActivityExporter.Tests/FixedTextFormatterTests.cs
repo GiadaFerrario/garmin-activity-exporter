@@ -112,18 +112,87 @@ public class FixedTextFormatterTests
         var text =
             """
             Elevation gain: 200
-            Distance, time, pace (km/h), avgHR, maxHR
-            20.6km 01:19:34 @15.6 160 178
+            Distance, time, pace (km/h), avgHR, maxHR, avgCad, maxCad, avgPower, maxPower
+            20.6km 01:19:34 @15.6 160 178 - - - -
             """;
         text = text.ReplaceLineEndings("\n");
 
         var formatter = new FixedTextFormatter();
-        
+
         var result = formatter.Format(summary);
-        
+
         Assert.Equal(text, result);
     }
-    
+
+    [Fact]
+    public void Format_BikeWithCadenceAndPower_AddsFourColumns()
+    {
+        var split = new Split(new TimeSpan(0, 30, 0), 10000, 150, 170,
+            AvgCadence: 82, MaxCadence: 95, AvgPower: 160, MaxPower: 280);
+
+        var text =
+            """
+            Elevation gain: 200
+            Distance, time, pace (km/h), avgHR, maxHR, avgCad, maxCad, avgPower, maxPower
+            10km 30:00 @20.0 150 170 82 95 160 280
+            """;
+        text = text.ReplaceLineEndings("\n");
+
+        var result = new FixedTextFormatter().Format(CreateSummary(Sport.Bike, split));
+
+        Assert.Equal(text, result);
+    }
+
+    [Fact]
+    public void Format_BikeWithoutPowerMeter_ShowsDashesForPower()
+    {
+        var split = new Split(new TimeSpan(0, 30, 0), 10000, 150, 170,
+            AvgCadence: 82, MaxCadence: 95);
+
+        var text =
+            """
+            Elevation gain: 200
+            Distance, time, pace (km/h), avgHR, maxHR, avgCad, maxCad, avgPower, maxPower
+            10km 30:00 @20.0 150 170 82 95 - -
+            """;
+        text = text.ReplaceLineEndings("\n");
+
+        var result = new FixedTextFormatter().Format(CreateSummary(Sport.Bike, split));
+
+        Assert.Equal(text, result);
+    }
+
+    [Fact]
+    public void Format_RunWithCadenceAndPower_DoesNotShowThem()
+    {
+        var split = new Split(new TimeSpan(0, 5, 0), 1000, 150, 170,
+            AvgCadence: 85, MaxCadence: 92, AvgPower: 250, MaxPower: 400);
+
+        var text =
+            """
+            Distance, time, pace (min/km), avgHR, maxHR
+            1km 05:00 @5:00 150 170
+            """;
+        text = text.ReplaceLineEndings("\n");
+
+        var result = new FixedTextFormatter().Format(CreateSummary(Sport.Run, split));
+
+        Assert.Equal(text, result);
+    }
+
+    private static ActivitySummary CreateSummary(Sport sport, Split split)
+    {
+        return new ActivitySummary(
+            Id: 1,
+            StartTime: new DateTimeOffset(2026, 10, 10, 10, 10, 10, TimeSpan.Zero),
+            Sport: sport,
+            TotalTime: split.Time,
+            DistanceInMeters: split.DistanceInMeters,
+            ElevationGain: sport == Sport.Bike ? 200 : null,
+            Splits: [split]
+        );
+    }
+
     [Fact]
     public void Format_SplitUnderOneKm_ShowsDistanceInMeters()
     {

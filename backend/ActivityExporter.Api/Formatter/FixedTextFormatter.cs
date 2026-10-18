@@ -17,7 +17,9 @@ public class FixedTextFormatter : IActivityFormatter
         };
 
         var bikeHeader = sport.Equals(Sport.Bike) ? $"Elevation gain: {activitySummary.ElevationGain}" : "";
-        var header = $"Distance, time, pace {headerPace}, avgHR, maxHR";
+        // cadence and power columns exist only for the bike
+        var bikeColumns = sport == Sport.Bike ? ", avgCad, maxCad, avgPower, maxPower" : "";
+        var header = $"Distance, time, pace {headerPace}, avgHR, maxHR{bikeColumns}";
         if (bikeHeader != "")
         {
             header = string.Join("\n", bikeHeader, header);
@@ -33,10 +35,26 @@ public class FixedTextFormatter : IActivityFormatter
         var distance = FormatDistance(split.DistanceInMeters);
         var time = FormatTime(split.Time);
         var pace = ComputeAndFormatPace(split.Time, split.DistanceInMeters, sport);
-        var avgHR = split.AvgHR.HasValue ?  split.AvgHR.ToString() : "-";
-        var maxHR = split.MaxHR.HasValue ?  split.MaxHR.ToString() : "-";
-        var splitText = string.Join(" ", distance, time, pace, avgHR, maxHR);
-        return splitText;
+        var columns = new List<string>
+        {
+            distance, time, pace,
+            FormatOptional(split.AvgHR), FormatOptional(split.MaxHR)
+        };
+        if (sport == Sport.Bike)
+        {
+            columns.Add(FormatOptional(split.AvgCadence));
+            columns.Add(FormatOptional(split.MaxCadence));
+            columns.Add(FormatOptional(split.AvgPower));
+            columns.Add(FormatOptional(split.MaxPower));
+        }
+
+        return string.Join(" ", columns);
+    }
+
+    // A value missing from the file (example: no sensor) is written as a dash
+    private static string FormatOptional(int? value)
+    {
+        return value.HasValue ? value.Value.ToString(CultureInfo.InvariantCulture) : "-";
     }
 
     private static string FormatDistance(double distanceInMeters)

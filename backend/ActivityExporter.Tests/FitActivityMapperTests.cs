@@ -207,6 +207,53 @@ public class FitActivityMapperTests
     }
 
     [Fact]
+    public void Map_BikeLapWithCadenceAndPower_ReturnsThemInTheSplit()
+    {
+        var session = CreateSession(FitSport.Cycling);
+        var lap = CreateLapWithCadenceAndPower();
+
+        var result = FitActivityMapper.Map(session, [lap]);
+
+        var split = Assert.Single(result.Splits);
+        Assert.Equal(82, split.AvgCadence);
+        Assert.Equal(95, split.MaxCadence);
+        Assert.Equal(160, split.AvgPower);
+        Assert.Equal(280, split.MaxPower);
+    }
+
+    [Theory]
+    [InlineData(FitSport.Running)]
+    [InlineData(FitSport.Swimming)]
+    public void Map_NotBikeLapWithCadenceAndPower_IgnoresThem(FitSport fitSport)
+    {
+        var session = CreateSession(fitSport);
+        var lap = CreateLapWithCadenceAndPower();
+
+        var result = FitActivityMapper.Map(session, [lap]);
+
+        var split = Assert.Single(result.Splits);
+        Assert.Null(split.AvgCadence);
+        Assert.Null(split.MaxCadence);
+        Assert.Null(split.AvgPower);
+        Assert.Null(split.MaxPower);
+    }
+
+    [Fact]
+    public void Map_BikeLapWithoutSensors_ReturnsNullCadenceAndPower()
+    {
+        var session = CreateSession(FitSport.Cycling);
+        var lap = CreateLap(Intensity.Active, 1000, timer: 120f);
+
+        var result = FitActivityMapper.Map(session, [lap]);
+
+        var split = Assert.Single(result.Splits);
+        Assert.Null(split.AvgCadence);
+        Assert.Null(split.MaxCadence);
+        Assert.Null(split.AvgPower);
+        Assert.Null(split.MaxPower);
+    }
+
+    [Fact]
     public void Map_SessionWithoutStartTime_ThrowsInvalidFileException()
     {
         var session = new SessionMesg();
@@ -227,6 +274,16 @@ public class FitActivityMapperTests
         session.SetTotalTimerTime(60f);
         session.SetTotalDistance(1000f);
         return session;
+    }
+
+    private static LapMesg CreateLapWithCadenceAndPower()
+    {
+        var lap = CreateLap(Intensity.Active, 1000, timer: 120f);
+        lap.SetAvgCadence(82);
+        lap.SetMaxCadence(95);
+        lap.SetAvgPower(160);
+        lap.SetMaxPower(280);
+        return lap;
     }
 
     // A null intensity or distance means "field absent from the file" (the setter is not called)

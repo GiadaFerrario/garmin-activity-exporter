@@ -18,7 +18,7 @@ public class FixedTextFormatter : IActivityFormatter
 
         var bikeHeader = sport.Equals(Sport.Bike) ? $"Elevation gain: {activitySummary.ElevationGain}" : "";
         // cadence and power columns exist only for the bike
-        var bikeColumns = sport == Sport.Bike ? ", avgCad, maxCad, avgPower, maxPower" : "";
+        var bikeColumns = sport == Sport.Bike ? ", avgCad, maxCad, avgPow, maxPow" : "";
         var header = $"Distance, time, pace {headerPace}, avgHR, maxHR{bikeColumns}";
         if (bikeHeader != "")
         {
@@ -48,7 +48,7 @@ public class FixedTextFormatter : IActivityFormatter
             columns.Add(FormatOptional(split.MaxPower));
         }
 
-        return string.Join(" ", columns);
+        return string.Join(", ", columns);
     }
 
     // A value missing from the file (example: no sensor) is written as a dash

@@ -39,6 +39,8 @@ function onUploadClicked() {
       <li v-for="file in selectedFiles" :key="file.name">{{ file.name }}</li>
     </ul>
 
-    <button :disabled="selectedFiles.length === 0" @click="onUploadClicked">Upload</button>
+    <button class="btn" :disabled="selectedFiles.length === 0" @click="onUploadClicked">
+      Upload
+    </button>
   </section>
 </template>

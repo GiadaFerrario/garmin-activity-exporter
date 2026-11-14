@@ -2,6 +2,10 @@ import { defineConfig, presetWind4 } from 'unocss'
 
 export default defineConfig({
   presets: [presetWind4()],
+  shortcuts: {
+    // The filled button of the app (it used to be a global `button` rule in main.css)
+    btn: 'py-2 px-4 border border-accent rounded-md bg-accent text-accent-text cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed',
+  },
   theme: {
     // The colors point to the CSS variables of base.css, which already switch with the dark theme:
     // no `dark:` prefix is needed in the templates.

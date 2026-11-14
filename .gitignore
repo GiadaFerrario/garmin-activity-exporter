@@ -444,3 +444,5 @@ dist/
 *.tcx
 
 .vscode
+
+docs/

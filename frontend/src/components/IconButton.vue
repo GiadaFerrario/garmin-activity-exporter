@@ -8,7 +8,7 @@ defineProps<{
 
 <template>
   <button
-    class="inline-flex items-center justify-center p-2 border border-accent rounded-md bg-transparent text-accent cursor-pointer hover:bg-surface-mute"
+    class="inline-flex items-center justify-center p-3 border border-accent rounded-md bg-transparent text-accent cursor-pointer hover:bg-surface-mute"
     type="button"
     :aria-label="label"
     :title="label"

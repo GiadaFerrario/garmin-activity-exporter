@@ -7,7 +7,12 @@ defineProps<{
 </script>
 
 <template>
-  <button class="icon-button" type="button" :aria-label="label" :title="label">
+  <button
+    class="inline-flex items-center justify-center p-2 bg-transparent text-accent hover:bg-surface-mute"
+    type="button"
+    :aria-label="label"
+    :title="label"
+  >
     <svg
       viewBox="0 0 24 24"
       width="18"
@@ -36,18 +41,3 @@ defineProps<{
     </svg>
   </button>
 </template>
-
-<style scoped>
-.icon-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem;
-  background: transparent;
-  color: var(--color-accent);
-}
-
-.icon-button:hover {
-  background: var(--color-background-mute);
-}
-</style>

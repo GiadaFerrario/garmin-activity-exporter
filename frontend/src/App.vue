@@ -71,9 +71,11 @@ async function onCopy() {
     <UploadResults :responses="results" @show-text="onShowText" />
 
     <PopUp v-if="selectedResponse !== null" @close="selectedResponse = null">
-      <h2 class="popup-title">{{ selectedResponse.fileName }}</h2>
+      <h2 class="font-[ui-monospace,SFMono-Regular,Menlo,monospace] text-[0.95rem] mb-3 font-bold">
+        {{ selectedResponse.fileName }}
+      </h2>
       <pre>{{ selectedResponse.text }}</pre>
-      <div class="popup-actions">
+      <div class="flex gap-3 mt-4">
         <IconButton icon="copy" label="Copy" @click="onCopy" />
         <IconButton icon="close" label="Close" @click="selectedResponse = null" />
       </div>
@@ -81,18 +83,3 @@ async function onCopy() {
     </PopUp>
   </main>
 </template>
-
-<style scoped>
-.popup-actions {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-
-.popup-title {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.95rem;
-  margin-bottom: 0.75rem;
-  font-weight: 700;
-}
-</style>

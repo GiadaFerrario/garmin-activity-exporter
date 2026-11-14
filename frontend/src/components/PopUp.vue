@@ -3,30 +3,16 @@ const emit = defineEmits<{ (event: 'close'): void }>()
 </script>
 
 <template>
-  <div class="backdrop" @click.self="emit('close')">
-    <div class="dialog" role="dialog" aria-modal="true">
+  <div
+    class="fixed inset-0 bg-black/50 flex items-center justify-center"
+    @click.self="emit('close')"
+  >
+    <div
+      class="bg-surface p-6 rounded-lg max-w-[90vw] max-h-[90vh] overflow-auto"
+      role="dialog"
+      aria-modal="true"
+    >
       <slot />
     </div>
   </div>
 </template>
-
-<style scoped>
-.backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.dialog {
-  background: var(--color-background);
-  color: var(--color-text);
-  padding: 1.5rem;
-  border-radius: 8px;
-  max-width: 90vw;
-  max-height: 90vh;
-  overflow: auto;
-}
-</style>

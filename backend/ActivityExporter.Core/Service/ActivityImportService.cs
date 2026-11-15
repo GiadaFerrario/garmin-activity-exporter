@@ -6,7 +6,8 @@ namespace ActivityExporter.Core.Service;
 
 public class ActivityImportService
 {
-    private const long MaxFileSizeInBytes = 10 * 1024 * 1024;
+    // Public: the Garmin client uses the same limit for the .fit files it extracts from a ZIP
+    public const long MaxFileSizeInBytes = 10 * 1024 * 1024;
 
     private readonly IActivityParser _activityParser;
 

@@ -24,7 +24,7 @@ public class FixedTextFormatterTests
         var text =
             """
             Distance, time, pace (min/km), avgHR, maxHR
-            1km 05:00 @5:00 160 178
+            1km, 05:00, @5:00, 160, 178
             """;
         text = text.ReplaceLineEndings("\n");
 
@@ -53,8 +53,8 @@ public class FixedTextFormatterTests
         var text =
             """
             Distance, time, pace (min/km), avgHR, maxHR
-            1km 05:00 @5:00 160 178
-            1km 03:00 @3:00 175 190
+            1km, 05:00, @5:00, 160, 178
+            1km, 03:00, @3:00, 175, 190
             """;
         text = text.ReplaceLineEndings("\n");
 
@@ -83,7 +83,7 @@ public class FixedTextFormatterTests
         var text =
             """
             Distance, time, pace (min/100m), avgHR, maxHR
-            50m 01:40 @3:20 160 178
+            50m, 01:40, @3:20, 160, 178
             """;
         text = text.ReplaceLineEndings("\n");
 
@@ -112,8 +112,8 @@ public class FixedTextFormatterTests
         var text =
             """
             Elevation gain: 200
-            Distance, time, pace (km/h), avgHR, maxHR, avgCad, maxCad, avgPower, maxPower
-            20.6km 01:19:34 @15.6 160 178 - - - -
+            Distance, time, pace (km/h), avgHR, maxHR, avgCad, maxCad, avgPow, maxPow
+            20.6km, 01:19:34, @15.6, 160, 178, -, -, -, -
             """;
         text = text.ReplaceLineEndings("\n");
 
@@ -133,8 +133,8 @@ public class FixedTextFormatterTests
         var text =
             """
             Elevation gain: 200
-            Distance, time, pace (km/h), avgHR, maxHR, avgCad, maxCad, avgPower, maxPower
-            10km 30:00 @20.0 150 170 82 95 160 280
+            Distance, time, pace (km/h), avgHR, maxHR, avgCad, maxCad, avgPow, maxPow
+            10km, 30:00, @20.0, 150, 170, 82, 95, 160, 280
             """;
         text = text.ReplaceLineEndings("\n");
 
@@ -152,8 +152,8 @@ public class FixedTextFormatterTests
         var text =
             """
             Elevation gain: 200
-            Distance, time, pace (km/h), avgHR, maxHR, avgCad, maxCad, avgPower, maxPower
-            10km 30:00 @20.0 150 170 82 95 - -
+            Distance, time, pace (km/h), avgHR, maxHR, avgCad, maxCad, avgPow, maxPow
+            10km, 30:00, @20.0, 150, 170, 82, 95, -, -
             """;
         text = text.ReplaceLineEndings("\n");
 
@@ -171,7 +171,7 @@ public class FixedTextFormatterTests
         var text =
             """
             Distance, time, pace (min/km), avgHR, maxHR
-            1km 05:00 @5:00 150 170
+            1km, 05:00, @5:00, 150, 170
             """;
         text = text.ReplaceLineEndings("\n");
 
@@ -211,7 +211,7 @@ public class FixedTextFormatterTests
         var text =
             """
             Distance, time, pace (min/km), avgHR, maxHR
-            1.2km 05:00 @4:10 160 178
+            1.2km, 05:00, @4:10, 160, 178
             """;
         text = text.ReplaceLineEndings("\n");
 
@@ -240,7 +240,7 @@ public class FixedTextFormatterTests
         var text =
             """
             Distance, time, pace (min/km), avgHR, maxHR
-            800m 05:00 @6:15 160 178
+            800m, 05:00, @6:15, 160, 178
             """;
         text = text.ReplaceLineEndings("\n");
 
@@ -269,7 +269,7 @@ public class FixedTextFormatterTests
         var text =
             """
             Distance, time, pace (min/km), avgHR, maxHR
-            1.7km 20:00 @11:46 160 178
+            1.7km, 20:00, @11:46, 160, 178
             """;
         text = text.ReplaceLineEndings("\n");
 
@@ -298,7 +298,7 @@ public class FixedTextFormatterTests
         var text =
             """
             Distance, time, pace (min/km), avgHR, maxHR
-            1.7km 20:00 @11:46 - 178
+            1.7km, 20:00, @11:46, -, 178
             """;
         text = text.ReplaceLineEndings("\n");
 
@@ -327,7 +327,7 @@ public class FixedTextFormatterTests
         var text =
             """
             Distance, time, pace (min/km), avgHR, maxHR
-            17km 02:20:00 @8:14 160 178
+            17km, 02:20:00, @8:14, 160, 178
             """;
         text = text.ReplaceLineEndings("\n");
 
@@ -356,7 +356,7 @@ public class FixedTextFormatterTests
         var text =
             """
             Distance, time, pace (min/km), avgHR, maxHR
-            2.1km 12:35 @6:00 160 178
+            2.1km, 12:35, @6:00, 160, 178
             """;
         text = text.ReplaceLineEndings("\n");
 

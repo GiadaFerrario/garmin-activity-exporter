@@ -91,6 +91,19 @@ public class GarminApiClientTests
     }
 
     [Fact]
+    public async Task ListActivitiesAsync_HeartRateZero_MeansNoHeartRateStrapAndIsNull()
+    {
+        // seen in the real data: an indoor ride without a strap has "averageHR": 0.0, not a missing field
+        var (client, _, _) = Create(_ => Text(RowsJson(Row(1, "2026-11-12 10:45:57", averageHr: 0.0, maxHr: 0.0, calories: 45.0))));
+
+        var item = Assert.Single(await client.ListActivitiesAsync(From, To));
+
+        Assert.Null(item.AvgHR);
+        Assert.Null(item.MaxHR);
+        Assert.Equal(45, item.Calories);
+    }
+
+    [Fact]
     public async Task ListActivitiesAsync_MissingOptionalFields_AreNull()
     {
         var (client, _, _) = Create(_ => Text(RowsJson(

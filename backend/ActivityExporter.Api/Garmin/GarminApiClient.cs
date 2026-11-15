@@ -157,8 +157,8 @@ public class GarminApiClient : IGarminActivitySource
             typeKey,
             startTime,
             TimeSpan.FromSeconds(ReadNumber(row, "duration") ?? 0),
-            RoundToInt(ReadNumber(row, "averageHR")),
-            RoundToInt(ReadNumber(row, "maxHR")),
+            ReadHeartRate(row, "averageHR"),
+            ReadHeartRate(row, "maxHR"),
             RoundToInt(ReadNumber(row, "calories")));
     }
 
@@ -197,6 +197,13 @@ public class GarminApiClient : IGarminActivitySource
         return row.TryGetProperty(property, out var element) && element.ValueKind == JsonValueKind.Number
             ? element.GetDouble()
             : null;
+    }
+
+    // Garmin writes 0 when there is no heart-rate strap, and a heart rate of 0 does not exist: it means "missing"
+    private static int? ReadHeartRate(JsonElement row, string property)
+    {
+        var rate = RoundToInt(ReadNumber(row, property));
+        return rate > 0 ? rate : null;
     }
 
     // Garmin writes heart rate and calories as 162.0

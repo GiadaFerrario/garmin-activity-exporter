@@ -9,7 +9,6 @@ public class GarminActivityTypesTests
     [InlineData("running", Sport.Run)]
     [InlineData("treadmill_running", Sport.Run)]
     [InlineData("gravel_cycling", Sport.Bike)]
-    [InlineData("virtual_ride", Sport.Bike)]
     [InlineData("indoor_cycling", Sport.Bike)]
     [InlineData("road_biking", Sport.Bike)]
     [InlineData("lap_swimming", Sport.Swim)]
@@ -26,6 +25,8 @@ public class GarminActivityTypesTests
     [InlineData("hiking")]
     [InlineData("mobility")]
     [InlineData("indoor_climbing")]
+    // Virtual rides (Zwift and the like) are left out on purpose: they are not read, not saved
+    [InlineData("virtual_ride")]
     [InlineData("a_type_that_does_not_exist")]
     [InlineData("")]
     public void ToSport_OtherType_ReturnsNull(string typeKey)

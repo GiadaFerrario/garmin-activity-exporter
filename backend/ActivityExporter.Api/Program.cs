@@ -23,6 +23,14 @@ builder.Services.AddHttpClient("garmin", (services, client) =>
 {
     client.BaseAddress = new Uri(services.GetRequiredService<IOptions<GarminApiOptions>>().Value.BaseUrl);
     client.Timeout = TimeSpan.FromSeconds(30);
+}).ConfigurePrimaryHttpMessageHandler(services =>
+{
+    // The Personal API of Garmin accepts only TLS 1.3 and .NET 8 on macOS does not have it: there the
+    // requests are made by the curl program (see GarminApiOptions.UseCurl)
+    var options = services.GetRequiredService<IOptions<GarminApiOptions>>().Value;
+    return options.ShouldUseCurl(OperatingSystem.IsMacOS())
+        ? (HttpMessageHandler)new CurlHttpMessageHandler(new ProcessCurlRunner(options.CurlPath), TimeSpan.FromSeconds(30))
+        : new SocketsHttpHandler();
 });
 builder.Services.AddSingleton(TimeProvider.System);
 // Singleton: the token is kept from one request to the next, until it is about to expire

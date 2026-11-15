@@ -12,7 +12,8 @@ public static class GarminActivityTypes
     public static Sport? ToSport(string typeKey) => typeKey switch
     {
         "running" or "treadmill_running" => Sport.Run,
-        "gravel_cycling" or "virtual_ride" or "indoor_cycling" or "road_biking" => Sport.Bike,
+        // "virtual_ride" (Zwift and the like) is not here on purpose: it is not read and not saved
+        "gravel_cycling" or "indoor_cycling" or "road_biking" => Sport.Bike,
         "lap_swimming" or "open_water_swimming" => Sport.Swim,
         "hiit" => Sport.Hiit,
         "strength_training" => Sport.Strength,

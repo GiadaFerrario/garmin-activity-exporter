@@ -4,5 +4,7 @@ public enum Sport
 {
     Swim, 
     Bike,
-    Run
+    Run,
+    Hiit, 
+    Strength
 }

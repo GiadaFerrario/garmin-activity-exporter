@@ -446,3 +446,8 @@ dist/
 .vscode
 
 docs/
+
+# the history (SQLite): the database and the files it keeps next to itself while the app runs
+*.db
+*.db-shm
+*.db-wal

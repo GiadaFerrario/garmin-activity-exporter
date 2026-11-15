@@ -10,7 +10,7 @@ public interface IActivityRepository
     /// </summary>
     /// <param name="savedActivity">The activity to save; its Id is ignored, the repository assigns it</param>
     /// <returns>The saved activity, with the Id assigned by the repository</returns>
-    /// <exception cref="Exception">When the GarminActivityId is already known (a dedicated exception will replace this one)</exception>
+    /// <exception cref="ActivityExporter.Core.Exceptions.DuplicateActivityException">When the GarminActivityId is already known</exception>
     Task<SavedActivity> AddAsync(SavedActivity savedActivity);
 
     /// <summary>

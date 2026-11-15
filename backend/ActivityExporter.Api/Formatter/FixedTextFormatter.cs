@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Globalization;
 using ActivityExporter.Core.Interfaces;
 using ActivityExporter.Core.Models;
@@ -9,11 +10,18 @@ public class FixedTextFormatter : IActivityFormatter
     public string Format(ActivitySummary activitySummary)
     {
         var sport = activitySummary.Sport;
+        // The only place that rejects a sport: the `_` arms below can no longer be reached
+        if (!sport.HasCoachText())
+        {
+            throw new NotSupportedException($"There is no coach text for the sport {sport}.");
+        }
+
         var headerPace = sport switch
         {
             Sport.Swim => "(min/100m)",
             Sport.Bike => "(km/h)",
-            Sport.Run => "(min/km)"
+            Sport.Run => "(min/km)",
+            _ => throw new UnreachableException()
         };
 
         var bikeHeader = sport.Equals(Sport.Bike) ? $"Elevation gain: {activitySummary.ElevationGain}" : "";
@@ -81,6 +89,7 @@ public class FixedTextFormatter : IActivityFormatter
             Sport.Swim => FormatPacePerDistance(Time, DistanceInMeters, 100),
             Sport.Bike => ComputeAndFormatPace_Bike(Time, DistanceInMeters),
             Sport.Run => FormatPacePerDistance(Time, DistanceInMeters, 1000),
+            _ => throw new UnreachableException()
         };
 
         return pace;

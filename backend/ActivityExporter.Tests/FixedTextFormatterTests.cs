@@ -193,6 +193,19 @@ public class FixedTextFormatterTests
         );
     }
 
+    [Theory]
+    [InlineData(Sport.Hiit)]
+    [InlineData(Sport.Strength)]
+    public void Format_SportWithoutCoachText_ThrowsNotSupported(Sport sport)
+    {
+        var split = new Split(new TimeSpan(0, 5, 0), 1000, 150, 170);
+
+        var exception = Assert.Throws<NotSupportedException>(
+            () => new FixedTextFormatter().Format(CreateSummary(sport, split)));
+
+        Assert.Contains(sport.ToString(), exception.Message);
+    }
+
     [Fact]
     public void Format_SplitUnderOneKm_ShowsDistanceInMeters()
     {

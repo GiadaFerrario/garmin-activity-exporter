@@ -43,12 +43,19 @@ public class FitActivityMapper
         return new Split(
             TimeSpan.FromSeconds(time ?? 0), 
             lap.GetTotalDistance() ?? 0, // lap total distance already in meters
-            lap.GetAvgHeartRate(), lap.GetMaxHeartRate(),
+            ToHeartRate(lap.GetAvgHeartRate()), ToHeartRate(lap.GetMaxHeartRate()),
             AvgCadence: isBike ? lap.GetAvgCadence() : null,
             MaxCadence: isBike ? lap.GetMaxCadence() : null,
             AvgPower: isBike ? lap.GetAvgPower() : null,
             MaxPower: isBike ? lap.GetMaxPower() : null
             ); 
+    }
+
+    // Without a heart-rate strap the watch writes 0 instead of leaving the field out, and a heart rate of 0
+    // does not exist: it means "missing" (the text then shows a dash)
+    private static int? ToHeartRate(byte? rate)
+    {
+        return rate > 0 ? rate : null;
     }
 
     private static CoreSport MapSport(FitSport? sport)

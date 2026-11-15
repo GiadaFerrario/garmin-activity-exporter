@@ -207,6 +207,39 @@ public class FitActivityMapperTests
     }
 
     [Fact]
+    public void Map_LapWithHeartRateZero_MeansNoHeartRateStrapAndReturnsNullHeartRates()
+    {
+        // Seen in a real ride without a strap: the watch writes 0, it does not leave the field out.
+        // A heart rate of 0 does not exist, so it is "missing" and the text shows a dash.
+        var session = CreateSession(FitSport.Cycling);
+        var lap = CreateLap(Intensity.Active, 1000, timer: 120f);
+        lap.SetAvgHeartRate(0);
+        lap.SetMaxHeartRate(0);
+
+        var result = FitActivityMapper.Map(session, [lap]);
+
+        var split = Assert.Single(result.Splits);
+        Assert.Null(split.AvgHR);
+        Assert.Null(split.MaxHR);
+    }
+
+    [Theory]
+    [InlineData(0, 150)]
+    [InlineData(120, 0)]
+    public void Map_LapWithOnlyOneHeartRateAtZero_NullsOnlyThatOne(byte average, byte maximum)
+    {
+        var session = CreateSession(FitSport.Running);
+        var lap = CreateLap(Intensity.Active, 1000, timer: 120f);
+        lap.SetAvgHeartRate(average);
+        lap.SetMaxHeartRate(maximum);
+
+        var split = Assert.Single(FitActivityMapper.Map(session, [lap]).Splits);
+
+        Assert.Equal(average == 0 ? null : average, split.AvgHR);
+        Assert.Equal(maximum == 0 ? null : maximum, split.MaxHR);
+    }
+
+    [Fact]
     public void Map_BikeLapWithCadenceAndPower_ReturnsThemInTheSplit()
     {
         var session = CreateSession(FitSport.Cycling);

@@ -6,15 +6,14 @@ import type { UploadResponseItem } from '@/api/uploadResponseItem.ts'
 import UploadResults from '@/components/UploadResults.vue'
 import PopUp from '@/components/PopUp.vue'
 import IconButton from '@/components/IconButton.vue'
+import { useCopyFeedback } from '@/composables/useCopyFeedback.ts'
 
 const results = ref<UploadResponseItem[]>([])
 const errorMessage = ref<string | null>(null)
 const isUploading = ref(false)
 const selectedResponse = ref<UploadResponseItem | null>(null)
-// Feedback shown in the popup after pressing Copy (success or failure); null hides it
-const copyMessage = ref<string | null>(null)
-// Handle of the timer that hides the message: kept so that a new copy can cancel the previous timer
-let copyMessageTimer: ReturnType<typeof setTimeout> | undefined
+// "Copied to clipboard" / "Could not copy the text", shown in the popup for two seconds
+const { message: copyMessage, copy, reset: resetCopyMessage } = useCopyFeedback()
 
 async function onUpload(files: File[]) {
   errorMessage.value = null
@@ -32,15 +31,7 @@ async function onUpload(files: File[]) {
 
 function onShowText(response: UploadResponseItem) {
   selectedResponse.value = response
-  clearTimeout(copyMessageTimer)
-  copyMessage.value = null
-}
-
-// Shows a message for 2 seconds; a newer message replaces the previous one and restarts the timer
-function showCopyMessage(message: string) {
-  clearTimeout(copyMessageTimer)
-  copyMessage.value = message
-  copyMessageTimer = setTimeout(() => (copyMessage.value = null), 2000)
+  resetCopyMessage()
 }
 
 async function onCopy() {
@@ -49,13 +40,7 @@ async function onCopy() {
     return
   }
 
-  try {
-    await navigator.clipboard.writeText(text)
-    showCopyMessage('Copied to clipboard')
-  } catch {
-    // the browser refused (permission denied, insecure context...)
-    showCopyMessage('Could not copy the text')
-  }
+  await copy(text)
 }
 </script>
 

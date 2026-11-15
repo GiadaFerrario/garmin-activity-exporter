@@ -6,6 +6,7 @@ const emit = defineEmits<{ (event: 'close'): void }>()
   <!-- On a phone the dialog is a sheet at the bottom of the screen (above the bottom bar, z-50),
        from the sm breakpoint up it is a box in the middle -->
   <div
+    data-test="backdrop"
     class="fixed inset-0 z-50 bg-black/50 flex items-end justify-center sm:items-center"
     @click.self="emit('close')"
   >

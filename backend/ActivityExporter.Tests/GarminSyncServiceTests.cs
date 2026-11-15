@@ -79,9 +79,13 @@ class FakeActivityRepository : IActivityRepository
         return Task.FromResult<IReadOnlySet<long>>(Known);
     }
 
-    public Task<IReadOnlyList<SavedActivity>> ListAsync() => throw new NotImplementedException();
-    public Task<SavedActivity?> GetAsync(int id) => throw new NotImplementedException();
-    public Task<bool> DeleteAsync(int id) => throw new NotImplementedException();
+    public Task<IReadOnlyList<SavedActivity>> ListAsync() =>
+        Task.FromResult<IReadOnlyList<SavedActivity>>(Saved.OrderByDescending(activity => activity.StartTime).ToList());
+
+    public Task<SavedActivity?> GetAsync(int id) =>
+        Task.FromResult(Saved.FirstOrDefault(activity => activity.Id == id));
+
+    public Task<bool> DeleteAsync(int id) => Task.FromResult(Saved.RemoveAll(activity => activity.Id == id) > 0);
 }
 
 public class GarminSyncServiceTests

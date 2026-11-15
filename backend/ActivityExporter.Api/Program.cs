@@ -36,6 +36,7 @@ builder.Services.AddScoped<IGarminActivitySource>(services => new GarminApiClien
     services.GetRequiredService<IOptions<GarminApiOptions>>()));
 builder.Services.AddSingleton(new GarminSyncOptions());
 builder.Services.AddScoped<GarminSyncService>();
+builder.Services.AddScoped<ActivityHistoryService>();
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -50,5 +51,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapActivityEndpoints();
+app.MapGarminEndpoints();
+app.MapHistoryEndpoints();
 
 app.Run();
